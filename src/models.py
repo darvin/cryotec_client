@@ -8,9 +8,9 @@
 
 from qtdjango.modelsmanager import ModelsManager
 
-ADDRESS = "http://127.0.0.1:8000"
+ADDRESS = "http://94.244.162.162:8000"
 API_PATH= "/api/"
-mm = ModelsManager(ADDRESS, API_PATH, "/home/darvin/workspace/cryotec_service/cryotec_service", \
+mm = ModelsManager(ADDRESS, API_PATH, "cryotec_server", \
                               ["machines","actions","actiontemplates","clients","checklists"],
                               ("Action", "PAction",))
 
