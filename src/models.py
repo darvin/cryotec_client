@@ -5,7 +5,6 @@
 @author: darvin
 '''
 
-
 from qtdjango.modelsmanager import ModelsManager
 
 ADDRESS = "http://94.244.162.162:8000"
