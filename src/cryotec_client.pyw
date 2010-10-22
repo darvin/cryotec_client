@@ -3,4 +3,4 @@
 import cryotec_client.mainform
 
 if __name__=="__main__":
-    mainform.main()
+    cryotec_client.mainform.main()
