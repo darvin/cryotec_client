@@ -24,7 +24,7 @@ import sys
 mainscript = 'src/cryotec_client.pyw'
 
 base_options = dict (name='cryotec_client',
-      install_requires = ["qtdjango","pyqt"],
+      install_requires = ["qtdjango","pyqt", "cryotec_server"],
       version='1.0',
       description='Cryotec Client',
       author='Sergey Klimov',
@@ -80,7 +80,7 @@ elif sys.platform == 'win32':
         windows=[mainscript],
         options = {
             py2exe : {
-                "includes" : ["sip", "PyQt4._qt"]
+                "includes" : ["sip", "PyQt4._qt", "cryotec_server", "qtdjango"]
                 }
             },
         data_files = [('resources',glob.glob('data/*.png')),
