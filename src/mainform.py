@@ -10,7 +10,7 @@ from PyQt4.QtGui import *
 from views import FixWithButtonsView, ReportWithButtonsView, \
         MaintenanceWithButtonsView, CheckupWithButtonsView, MachinePanel
 from qtdjango.models import Model
-from models import mm
+from models import models
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -38,7 +38,7 @@ class MainWindow(QMainWindow):
         toolbar.addAction(machinetreepanelAction)
         toolbar.addAction(syncAction)
 
-        self.mm = mm
+        self.mm = models
         self.mm.add_notify_dumped(self.synced)
         self.mm.add_notify_undumped(self.unsynced)
 

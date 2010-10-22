@@ -11,16 +11,12 @@ from qtdjango.modelsmanager import ModelsManager
 ADDRESS = "http://172.16.170.1:8000"
 
 API_PATH= "/api/"
-mm = ModelsManager(ADDRESS, API_PATH, "cryotec_server", \
+models = ModelsManager(ADDRESS, API_PATH, "cryotec_server", \
                               ["machines","actions","actiontemplates","clients","checklists"],
                               ("Action", "PAction",))
 
-current_module =__import__(__name__)
-
-
-
-mm.do_models_magic_with_module(current_module)
-print dir(current_module)
+#current_module =__import__(__name__)
+#mm.do_models_magic_with_module(current_module)
 
 if __name__ == '__main__':
 #    print Machine.all()

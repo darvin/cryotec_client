@@ -2,7 +2,7 @@
 
 from qtdjango.detailviews import *
 from qtdjango.undetailviews import *
-import models
+from models import models
 from PyQt4 import QtCore
 from PyQt4.QtGui import *
 from PyQt4.QtCore import QRect
