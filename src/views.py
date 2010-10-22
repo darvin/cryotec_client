@@ -2,17 +2,17 @@
 
 from qtdjango.detailviews import *
 from qtdjango.undetailviews import *
-from models import *
+import models
 from PyQt4 import QtCore
 from PyQt4.QtGui import *
 from PyQt4.QtCore import QRect
 
 
 class MachineTreeView(TreeView):
-    model = Machine
+    model = models.Machine
     tree = (
-            ("customer", Client),
-            ("machinemark", MachineMark),
+            ("customer", models.Client),
+            ("machinemark", models.MachineMark),
            )
     fields = "__unicode__"
 
@@ -43,7 +43,7 @@ class MachinePanel(QFrame):
 
 
 class ChecklistInlineView(QFrame, UndetailView):
-    model = ChecklistAnswer
+    model = models.ChecklistAnswer
 
     def __init__(self, filter):
         """docstring for __init__"""
@@ -94,10 +94,10 @@ class ActionView(UndetailWithButtonsView):
         self.set_filter(None)
 
 class FixDetailView(DetailView):
-    model = Fix
+    model = models.Fix
 
 class FixView(TableView):
-    model = Fix
+    model = models.Fix
     detail_view = FixDetailView
 
 class FixWithButtonsView(ActionView):
@@ -106,11 +106,11 @@ class FixWithButtonsView(ActionView):
 
 
 class ReportDetailView(DetailView):
-    model = Report
+    model = models.Report
     inline_views = ((FixWithButtonsView, "report", u"Ремонты этой неисправности"),)
 
 class ReportView(TableView):
-    model = Report
+    model = models.Report
     detail_view = ReportDetailView
 
 class ReportWithButtonsView(ActionView):
@@ -118,11 +118,11 @@ class ReportWithButtonsView(ActionView):
 
 
 class MaintenanceDetailView(DetailView):
-    model = Maintenance
+    model = models.Maintenance
     inline_views = ((ChecklistInlineView, "paction", u"Ответы на чеклист"),)
 
 class MaintenanceView(TableView):
-    model = Maintenance
+    model = models.Maintenance
     detail_view = MaintenanceDetailView
 
 class MaintenanceWithButtonsView(ActionView):
@@ -130,10 +130,10 @@ class MaintenanceWithButtonsView(ActionView):
 
 
 class CheckupDetailView(DetailView):
-    model = Checkup
+    model = models.Checkup
 
 class CheckupView(TableView):
-    model = Checkup
+    model = models.Checkup
     detail_view = CheckupDetailView
 
 class CheckupWithButtonsView(ActionView):

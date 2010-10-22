@@ -77,7 +77,7 @@ elif sys.platform == 'win32':
     import py2exe
     extra_options = dict(
         setup_requires=['py2exe'],
-        windows=[mainscript],
+        console=[mainscript],
         options = {
             py2exe : {
                 "includes" : ["sip", "PyQt4._qt", "cryotec_server", "qtdjango"]
