@@ -8,7 +8,8 @@
 from qtdjango.modelsmanager import ModelsManager
 
 #ADDRESS = "http://94.244.162.162:8000"
-ADDRESS = "http://172.16.170.1:8000"
+#ADDRESS = "http://172.16.170.1:8000"
+ADDRESS = "http://127.0.0.1:8000"
 
 API_PATH= "/api/"
 models = ModelsManager(ADDRESS, API_PATH, "cryotec_server", \
