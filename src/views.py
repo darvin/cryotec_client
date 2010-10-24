@@ -98,6 +98,7 @@ class FixDetailView(DetailView):
 
 class FixView(TableView):
     model = models.Fix
+    sort_by = "-date"
     detail_view = FixDetailView
 
 class FixWithButtonsView(ActionView):
@@ -111,6 +112,7 @@ class ReportDetailView(DetailView):
 
 class ReportView(TableView):
     model = models.Report
+    sort_by = "-date"
     detail_view = ReportDetailView
 
 class ReportWithButtonsView(ActionView):
@@ -123,6 +125,7 @@ class MaintenanceDetailView(DetailView):
 
 class MaintenanceView(TableView):
     model = models.Maintenance
+    sort_by = "-date"
     detail_view = MaintenanceDetailView
 
 class MaintenanceWithButtonsView(ActionView):
@@ -134,6 +137,7 @@ class CheckupDetailView(DetailView):
 
 class CheckupView(TableView):
     model = models.Checkup
+    sort_by = "-date"
     detail_view = CheckupDetailView
 
 class CheckupWithButtonsView(ActionView):
