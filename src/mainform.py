@@ -8,6 +8,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from settings import check_settings, SettingsDialog
 import images_rc
+from widgets import ServerResponceDock
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -30,11 +31,16 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(self.notebook)
 
-        dockWidget = QDockWidget(u"Оборудование", self)
+        machineDockWidget = QDockWidget(u"Оборудование", self)
 
-        dockWidget.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
-        dockWidget.setWidget(self.machine_tree)
-        self.addDockWidget(Qt.LeftDockWidgetArea, dockWidget)
+        machineDockWidget.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+        machineDockWidget.setWidget(self.machine_tree)
+        self.addDockWidget(Qt.LeftDockWidgetArea, machineDockWidget)
+
+
+        self.responce_dock = ServerResponceDock(u"Ответ от сервера", self)
+        self.responce_dock.setAllowedAreas(Qt.RightDockWidgetArea|Qt.BottomDockWidgetArea)
+        self.addDockWidget(Qt.BottomDockWidgetArea, self.responce_dock)
 
 
         self.settings_dialog = SettingsDialog()
@@ -58,7 +64,7 @@ class MainWindow(QMainWindow):
 
 
 
-        machinetreepanelAction = dockWidget.toggleViewAction()
+        machinetreepanelAction = machineDockWidget.toggleViewAction()
         machinetreepanelAction.setIcon(QIcon(":/icons/application_side_tree.png"))
         toolbar = self.addToolBar("main")
 
@@ -86,12 +92,14 @@ class MainWindow(QMainWindow):
         qApp.processEvents()
         self.mm.dump()
 
-    def synced(self):
+    def synced(self, responces):
         self.statusBar().showMessage(u'Синхронизированно')
         self.syncAction.setIcon(QIcon(":/icons/update.png"))
 
         self.syncProgress.setVisible(False)
 #        self.syncProgress.hide()
+
+        self.responce_dock.show_responce(responces)
         qApp.processEvents()
 
     def unsynced(self):

@@ -18,7 +18,7 @@ class MachineTreeView(TreeView):
 
     def __init__(self, *args, **kwargs):
         super(MachineTreeView, self).__init__(*args, **kwargs)
-        self.header().hide()
+#        self.header().hide()
 
 
 
