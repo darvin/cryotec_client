@@ -51,20 +51,23 @@ class SettingsDialog(QDialog):
             widget.setText(default)
 
 
-def check_settings():
+def check_settings(parent):
 
     settings = QSettings()
 
     while not settings.contains("address"):
-        sd = SettingsDialog()
+        print "settings dialog"
+        sd = SettingsDialog(parent=parent)
         sd.exec_()
 
 
-def error_settings(name):
+def error_settings(parent, name):
     settings = QSettings()
     old_setting = settings.value(name)
     while settings.value(name)==old_setting:
-        sd = SettingsDialog(error_setting=name)
+        print "error settings"
+        sd = SettingsDialog(parent=parent, error_setting=name)
+	sd.show()
         sd.exec_()
 
 def get_settings(name):

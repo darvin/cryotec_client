@@ -6,7 +6,7 @@
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from settings import check_settings, SettingsDialog
+from settings import check_settings, error_settings, SettingsDialog
 import images_rc
 from widgets import ServerResponceDock
 
@@ -16,9 +16,8 @@ class MainWindow(QMainWindow):
         self.resize(1024,768)
         from views import FixWithButtonsView, ReportWithButtonsView, \
                 MaintenanceWithButtonsView, CheckupWithButtonsView, MachinePanel
+
         from models import models
-
-
         self.machine_tree = MachinePanel()
         self.note_views = {
                 u"Неисправности":ReportWithButtonsView(None),
@@ -139,7 +138,15 @@ def main():
     Qt.white)
     # make sure Qt really display the splash screen
     app.processEvents()
-    check_settings()
+    check_settings(splash)
+
+    try:
+        from models import models
+    except ImportError:
+	error_settings(splash, "server_package")
+    except:
+	error_settings(splash, "address")
+
     form = MainWindow()  # создаёт объект формы
     splash.finish(form)
     form.show()  # даёт команду на отображение объекта формы и содержимого

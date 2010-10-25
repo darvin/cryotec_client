@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4.QtWebKit import QWebView
+import PyQt4.QtNetwork
 from PyQt4.QtGui import QDockWidget
 
 __author__ = 'darvin'

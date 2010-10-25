@@ -9,17 +9,13 @@ from qtdjango.modelsmanager import ModelsManager
 #ADDRESS = "http://94.244.162.162:8000"
 #ADDRESS = "http://172.16.170.1:8000"
 
-from settings import get_settings, error_settings
-#try:
+from settings import get_settings
 models = ModelsManager(get_settings("address"), \
                    get_settings("api_path"), \
                    get_settings("server_package"), \
                           ["machines","actions","actiontemplates","clients","checklists"],
                           ("Action", "PAction",))
-#except ImportError:
-#    error_settings("server_package")
-#except:
-#    error_settings("address")
+  
 
 
 #current_module =__import__(__name__)
