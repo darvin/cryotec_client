@@ -6,30 +6,15 @@ from models import models
 from PyQt4 import QtCore
 from PyQt4.QtGui import *
 from PyQt4.QtCore import QRect
+from qtdjango.multimodelviews import MultiModelTreeView, ModelTreeWidgetItem
 
-
-class MachineTreeView(TreeView):
-    model = models.Machine
-    tree = (
-            ("customer", models.Client),
-            ("machinemark", models.MachineMark),
-           )
-    fields = "__unicode__"
-
-    def __init__(self, *args, **kwargs):
-        super(MachineTreeView, self).__init__(*args, **kwargs)
-#        self.header().hide()
-
-
-class ModelTreeWidgetItem(QTreeWidgetItem):
+class MachineTreeItem(ModelTreeWidgetItem):
     def __init__(self,  parent, model_instance):
-        super(ModelTreeWidgetItem, self).__init__(parent)
-        self.model_instance = model_instance
-        self.setText(0, unicode(self.model_instance))
+        super(MachineTreeItem, self).__init__(parent, model_instance)
+        if model_instance.__class__==models.Machine:
+            self.setText(1, unicode(model_instance.client))
 
-
-
-class MachineTree(QTreeWidget):
+class MachineTree(MultiModelTreeView):
     tree_structure = (\
         ("machinetype", models.MachineType),
         ("machinemark", models.MachineMark),
@@ -37,38 +22,14 @@ class MachineTree(QTreeWidget):
     )
     modelSelectionChanged = QtCore.pyqtSignal([Model])
     modelSelectionCleared = QtCore.pyqtSignal()
-
-
-    def __process_node(self, node=None, level=0, parenttreeitem=None):
-        if node is None:
-            subnodes = self.tree_structure[level][1].all()
-        else:
-            subnodes = self.tree_structure[level][1].filter(**{self.tree_structure[level-1][0]:node})
-
-        result = []
-        for subnode in subnodes:
-            result.append(subnode)
-            if parenttreeitem is not None:
-                treeitem = ModelTreeWidgetItem(parenttreeitem, model_instance=subnode)
-            else:
-                treeitem = ModelTreeWidgetItem(self,model_instance=subnode )
-            if level<len(self.tree_structure)-1:
-                result.append(self.__process_node(subnode, level+1, treeitem))
-        return result
+    item_class = MachineTreeItem
 
     def __init__(self, *args, **kwargs):
         super(MachineTree,self).__init__(*args, **kwargs)
-#        from pprint import pprint
-#        pprint(self.__process_node())
-        self.__process_node()
-        self.currentItemChanged.connect(self.currentItemChange)
-        self.header().hide()
-
-    @QtCore.pyqtSlot("QTreeWidgetItem*", "QTreeWidgetItem*")
-    def currentItemChange(self, current, previous):
-        self.modelSelectionChanged.emit(current.model_instance)
-
-
+        self.setColumnCount(2)
+        self.expandAll()
+        self.resizeColumnToContents(0)
+        self.resizeColumnToContents(1)
 
 class MachinePanel(QFrame):
     def __init__(self):

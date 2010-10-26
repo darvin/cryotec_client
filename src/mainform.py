@@ -9,6 +9,7 @@ from PyQt4.QtGui import *
 from settings import check_settings, error_settings, SettingsDialog
 import images_rc
 from widgets import ServerResponceDock, ShowModelInfoDock
+import settings
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -19,6 +20,17 @@ class MainWindow(QMainWindow):
 
         from models import models
         self.machine_tree = MachinePanel()
+
+
+        self.info_dock = ShowModelInfoDock(u"Информация", self)
+        self.info_dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea |\
+                                Qt.BottomDockWidgetArea)
+
+        self.machine_tree.view.modelSelectionChanged.connect(self.info_dock.modelChanged)
+        self.machine_tree.view.modelSelectionCleared.connect(self.info_dock.modelCleared)
+
+
+
         self.note_views = {
                 u"Неисправности":ReportWithButtonsView(None),
                 u"Ремонты":FixWithButtonsView(None),
@@ -26,26 +38,20 @@ class MainWindow(QMainWindow):
                 u"Контроли моточасов":CheckupWithButtonsView(None),
                 }
         #self.machine_tree.setSelectionMode(QAbstractItemView.MultiSelection)
-        self.notebook = CentralNotebook(self.machine_tree, self.note_views)
+        self.notebook = CentralNotebook(self.machine_tree, self.info_dock, self.note_views)
 
         self.setCentralWidget(self.notebook)
 
         machineDockWidget = QDockWidget(u"Оборудование", self)
+        machineDockWidget.setObjectName("machine_dock")
 
         machineDockWidget.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         machineDockWidget.setWidget(self.machine_tree)
-        self.addDockWidget(Qt.LeftDockWidgetArea, machineDockWidget)
 
-
-        self.info_dock = ShowModelInfoDock(u"Информация", self)
-        self.info_dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
-        self.addDockWidget(Qt.LeftDockWidgetArea, self.info_dock)
-        self.machine_tree.view.modelSelectionChanged.connect(self.info_dock.modelChanged)
-        self.machine_tree.view.modelSelectionCleared.connect(self.info_dock.modelCleared)
 
         self.responce_dock = ServerResponceDock(u"Ответ от сервера", self)
         self.responce_dock.setAllowedAreas(Qt.RightDockWidgetArea|Qt.BottomDockWidgetArea)
-        self.addDockWidget(Qt.BottomDockWidgetArea, self.responce_dock)
+
 
         self.settings_dialog = SettingsDialog()
         settingsAction = QAction(QIcon(":/icons/setting_tools.png"), u"Настройки", self)
@@ -71,7 +77,7 @@ class MainWindow(QMainWindow):
         machinetreepanelAction = machineDockWidget.toggleViewAction()
         machinetreepanelAction.setIcon(QIcon(":/icons/application_side_tree.png"))
         toolbar = self.addToolBar("main")
-
+        toolbar.setObjectName("main_toolbar")
         toolbar.addAction(machinetreepanelAction)
         toolbar.addWidget(syncButton)
         toolbar.addAction(settingsAction)
@@ -89,6 +95,19 @@ class MainWindow(QMainWindow):
         self.mm.add_notify_dumped(self.synced)
         self.mm.add_notify_undumped(self.unsynced)
 
+
+
+        self.addDockWidget(Qt.LeftDockWidgetArea, machineDockWidget)
+        self.addDockWidget(Qt.BottomDockWidgetArea, self.info_dock)
+        self.addDockWidget(Qt.BottomDockWidgetArea, self.responce_dock)
+        self.setCorner(Qt.BottomLeftCorner, Qt.LeftDockWidgetArea)
+
+        settings = QSettings()
+        self.restoreGeometry(settings.value("geometry").toByteArray());
+        self.restoreState(settings.value("windowState").toByteArray());
+        for widget in self.note_views.values():
+            table_name = widget.view.__class__.__name__+"State"
+            widget.view.horizontalHeader().restoreState(settings.value(table_name, "").toByteArray())
 
     def synchronize(self):
         """Synchronizes ModelsManager"""
@@ -111,17 +130,26 @@ class MainWindow(QMainWindow):
         self.syncAction.setIcon(QIcon(":/icons/unupdated.png"))
 
 
+    def closeEvent(self, event):
+        settings = QSettings()
+        settings.setValue("geometry", self.saveGeometry())
+        settings.setValue("windowState", self.saveState())
+        for widget in self.note_views.values():
+            table_name = widget.view.__class__.__name__+"State"
+            settings.setValue(table_name, widget.view.horizontalHeader().saveState())
 
+        QMainWindow.closeEvent(self, event)
 
 
 class CentralNotebook(QTabWidget):
-    def __init__(self, machine_tree, views, parent=None):
+    def __init__(self, machine_tree, info_dock, views, parent=None):
         super(CentralNotebook, self).__init__(parent)
         self.widgets = []
-        self.machine_tree = machine_tree
+        self.machine_tree, self.info_dock = machine_tree, info_dock
         for label, widget in views.items():
             w = widget
             machine_tree.view.modelSelectionChanged.connect(w.filterModelSelected)
+            w.view.modelSelectionChanged.connect(self.info_dock.modelChanged)
             machine_tree.view.modelSelectionCleared.connect(w.filterCleared)
 
             self.widgets.append(w)

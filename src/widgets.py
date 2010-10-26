@@ -12,6 +12,7 @@ __author__ = 'darvin'
 class ServerResponceDock(QDockWidget):
     def __init__(self, *args, **kwargs):
         super(ServerResponceDock,self).__init__(*args, **kwargs)
+        self.setObjectName("responce_dock")
         self.webview = QWebView()
         self.setWidget(self.webview)
         self.webview.setHtml("")
@@ -53,13 +54,16 @@ class ServerResponceDock(QDockWidget):
 class ShowModelInfoDock(QDockWidget):
     def __init__(self, *args, **kwargs):
         super(ShowModelInfoDock,self).__init__(*args, **kwargs)
+        self.setObjectName("info_dock")
         self.webview = QWebView()
         self.setWidget(self.webview)
         self.webview.setHtml("")
 
     @QtCore.pyqtSlot(Model)
     def modelChanged(self, model):
-        header = unicode(model)
+        print model
+        header1 = model.__class__.verbose_name()
+        header2 = unicode(model)
         fields = model.__class__.get_fields()
         field_text_values = {}
         for fieldname, field in fields.items():
@@ -70,10 +74,11 @@ class ShowModelInfoDock(QDockWidget):
 #        if model.__class__.__name__=="Machine":
 #            d = [model.machinemark, model.client, ]
         html = u""
-        html += u"<h1>%s</h1>" %(header,)
+        html += u"<h1>%s</h1><h2>%s</h2>" %(header1,header2)
         html += u"<br>".join([u"<b>%s:</b> <i>%s</i>"%(x[0], x[1]) for x in field_text_values.values()])
 
         self.webview.setHtml(html)
+        print self.webview.page().mainFrame().contentsSize()
 
     @QtCore.pyqtSlot()
     def modelCleared(self):
