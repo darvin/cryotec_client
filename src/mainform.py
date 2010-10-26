@@ -8,7 +8,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from settings import check_settings, error_settings, SettingsDialog
 import images_rc
-from widgets import ServerResponceDock
+from widgets import ServerResponceDock, ShowModelInfoDock
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -37,10 +37,15 @@ class MainWindow(QMainWindow):
         self.addDockWidget(Qt.LeftDockWidgetArea, machineDockWidget)
 
 
+        self.info_dock = ShowModelInfoDock(u"Информация", self)
+        self.info_dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.info_dock)
+        self.machine_tree.view.modelSelectionChanged.connect(self.info_dock.modelChanged)
+        self.machine_tree.view.modelSelectionCleared.connect(self.info_dock.modelCleared)
+
         self.responce_dock = ServerResponceDock(u"Ответ от сервера", self)
         self.responce_dock.setAllowedAreas(Qt.RightDockWidgetArea|Qt.BottomDockWidgetArea)
         self.addDockWidget(Qt.BottomDockWidgetArea, self.responce_dock)
-
 
         self.settings_dialog = SettingsDialog()
         settingsAction = QAction(QIcon(":/icons/setting_tools.png"), u"Настройки", self)
@@ -116,7 +121,7 @@ class CentralNotebook(QTabWidget):
         self.machine_tree = machine_tree
         for label, widget in views.items():
             w = widget
-            machine_tree.view.modelSelectionChanged.connect(w.filterByMachine)
+            machine_tree.view.modelSelectionChanged.connect(w.filterModelSelected)
             machine_tree.view.modelSelectionCleared.connect(w.filterCleared)
 
             self.widgets.append(w)
@@ -140,12 +145,12 @@ def main():
     app.processEvents()
     check_settings(splash)
 
-    try:
-        from models import models
-    except ImportError:
-	error_settings(splash, "server_package")
-    except:
-	error_settings(splash, "address")
+#    try:
+    from models import models
+#    except ImportError:
+#	error_settings(splash, "server_package")
+#    except:
+#	error_settings(splash, "address")
 
     form = MainWindow()  # создаёт объект формы
     splash.finish(form)
