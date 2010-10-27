@@ -173,12 +173,12 @@ def main():
     app.processEvents()
     check_settings(splash)
 
-#    try:
-    from models import models
-#    except ImportError:
-#	error_settings(splash, "server_package")
-#    except:
-#	error_settings(splash, "address")
+    try:
+        from models import models
+    except ImportError:
+        error_settings(splash, "server_package")
+    except:
+        error_settings(splash, "address")
 
     form = MainWindow()  # создаёт объект формы
     splash.finish(form)
