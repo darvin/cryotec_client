@@ -76,15 +76,9 @@ class ShowModelInfoDock(QDockWidget):
         html += u"<h1>%s</h1><h2>%s</h2>" %(header1,header2)
         html += u"<br>".join([u"<b>%s:</b> <i>%s</i>"%(x[0], x[1]) for x in field_text_values.values()])
 
-        try:
-            html += "<br>" + model.extra_to_html
-        except AttributeError:
-            pass
-        except TypeError:
-            pass
+        html += "<br>" + model.extra_to_html()
 
         self.webview.setHtml(html)
-        print self.webview.page().mainFrame().contentsSize()
 
     @QtCore.pyqtSlot()
     def modelCleared(self):

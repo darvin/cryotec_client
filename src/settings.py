@@ -1,10 +1,31 @@
 # -*- coding: utf-8 -*-
+from PyQt4 import QtCore
 
 __author__ = 'darvin'
 
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
+
+class StyleComboBox(QComboBox):
+    styles = QStyleFactory.keys()
+    def __init__(self, *args, **kwargs):
+        super(StyleComboBox,self).__init__(*args, **kwargs)
+        self.addItems(self.styles)
+        self.currentIndexChanged.connect(self.change_style)
+
+    def setText(self, str):
+        self.setCurrentIndex(self.findText(str))
+
+    @QtCore.pyqtSlot(int)
+    def change_style(self, style_num):
+        style = self.itemText(style_num)
+        app = qApp
+        app.setStyle(style)
+
+    def text(self):
+        return self.currentText()
 
 
 class SettingsDialog(QDialog):
@@ -20,6 +41,7 @@ class SettingsDialog(QDialog):
             ("address", u"Адрес сервера", QLineEdit(), "http://127.0.0.1:8000"),
             ("api_path", u"Путь к api сервера", QLineEdit(), "/api/"),
             ("server_package", u"Название пакета сервера", QLineEdit(), "cryotec_server"),
+            ("applicationStyle", u"Стиль приложения", StyleComboBox(), "windowsxp"),
         )
         super(SettingsDialog, self).__init__(parent)
         self.setModal(True)

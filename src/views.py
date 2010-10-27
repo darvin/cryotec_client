@@ -174,7 +174,7 @@ class FixWithButtonsView(ActionView):
 
 class ReportDetailView(DetailView):
     model = models.Report
-    inline_views = ((FixWithButtonsView, "report", u"Ремонты этой неисправности"),)
+#    inline_views = ((FixWithButtonsView, "report", u"Ремонты этой неисправности"),)
 
     def set_filter(self, filter):
         super(ReportDetailView, self).set_filter(filter)

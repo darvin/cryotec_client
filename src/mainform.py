@@ -163,6 +163,8 @@ def main():
     app.setApplicationName("CryotecClient")
     app.setOrganizationName("SKOpenCodes")
     app.setOrganizationDomain("skopencodes.org")
+    settings = QSettings()
+    app.setStyle(settings.value("applicationStyle", "windowsxp").toString())
     pixmap = QPixmap(":/images/splashscreen.png")
     splash = QSplashScreen(pixmap, Qt.WindowStaysOnTopHint)
     splash.setMask(pixmap.mask()) # this is usefull if the splashscreen is not a regular ractangle...
@@ -173,12 +175,12 @@ def main():
     app.processEvents()
     check_settings(splash)
 
-    try:
-        from models import models
-    except ImportError:
-        error_settings(splash, "server_package")
-    except:
-        error_settings(splash, "address")
+#    try:
+    from models import models
+#    except ImportError:
+#        error_settings(splash, "server_package")
+#    except:
+#        error_settings(splash, "address")
 
     form = MainWindow()  # создаёт объект формы
     splash.finish(form)
