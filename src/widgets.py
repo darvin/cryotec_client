@@ -61,21 +61,27 @@ class ShowModelInfoDock(QDockWidget):
 
     @QtCore.pyqtSlot(Model)
     def modelChanged(self, model):
-        print model
         header1 = model.__class__.verbose_name()
-        header2 = unicode(model)
+        header2 = "" #unicode(model)
         fields = model.__class__.get_fields()
         field_text_values = {}
         for fieldname, field in fields.items():
-             field_text_values[fieldname] = []
-             field_text_values[fieldname].append(field.verbose_name)
-             field_text_values[fieldname].append(field.to_text(getattr(model, fieldname)))
+            if not fieldname in ("user", "id", "extra_to_html"):
+                field_text_values[fieldname] = []
+                field_text_values[fieldname].append(field.verbose_name)
+                field_text_values[fieldname].append(field.to_text(getattr(model, fieldname)))
 
-#        if model.__class__.__name__=="Machine":
-#            d = [model.machinemark, model.client, ]
+
         html = u""
         html += u"<h1>%s</h1><h2>%s</h2>" %(header1,header2)
         html += u"<br>".join([u"<b>%s:</b> <i>%s</i>"%(x[0], x[1]) for x in field_text_values.values()])
+
+        try:
+            html += "<br>" + model.extra_to_html
+        except AttributeError:
+            pass
+        except TypeError:
+            pass
 
         self.webview.setHtml(html)
         print self.webview.page().mainFrame().contentsSize()

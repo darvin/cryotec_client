@@ -70,18 +70,38 @@ class ChecklistInlineView(QFrame, UndetailView):
     def set_filter(self, filter):
         """Creates all widgets when we sets filter"""
         self.__clean()
-#        print filter["paction"], "#######"
-        machine = filter["paction"].machine
-#        print machine
+
+        machine = filter["maintenance"].machine
+
         mmark = machine.machinemark
-        questions =[q for q in ChecklistQuestion.filter(machinemark=mmark)]
-#        for q in questions:
-#            print unicode(q), ChecklistAnswers.filter(maitenance=filter["paction"],\
-#                                               checklistquestion=q)
+        self.questions =[q for q in models.ChecklistQuestion.all() if mmark in q.machinemark]
+        self.answers = []
+        for q in self.questions:
+            try:
+                answer = models.ChecklistAnswer.filter(maintenance=filter["maintenance"],\
+                                               checklistquestion=q)[0]
+            except IndexError:
+                answer = models.ChecklistAnswer.new()
+                answer.maintenance=filter["maintenance"]
+                answer.checklistquestion=q
+
+            self.answers.append(answer)
+
+
+            q_str = q.comment
+            if q.required:
+                q_str = u"<b>%s</b>" % q_str
+
+            w = TextEditWidget()
+            w.setData(answer.comment)
+            self._widgets.append(w)
+            self.formlayout.addRow(QtCore.QString.fromUtf8(q_str), w)
 
 
     def save(self):
-        pass
+        for q, a, w in zip(self.questions, self.answers, self._widgets):
+            a.comment = w.getData()
+            a.save()
 
 
 
@@ -93,6 +113,14 @@ class ActionView(UndetailWithButtonsView):
     def __init__(self, filter):
         """docstring for __init__"""
         super(ActionView, self).__init__(filter)
+
+    def get_buttons_state(self, model_selected=None):
+        f = self.view.filter
+        if f is not None:
+            if "machine" in f.keys() or "report" in f.keys() or "maintenance" in f.keys():
+                return super(ActionView, self).get_buttons_state(model_selected)
+        return {"edit":False, "delete":False, "new":False}
+
 
     @QtCore.pyqtSlot(Model)
     def filterModelSelected(self, model):
@@ -112,11 +140,32 @@ class ActionView(UndetailWithButtonsView):
 class FixDetailView(DetailView):
     model = models.Fix
 
+    def set_filter(self, filter):
+
+
+        if filter is not None:
+            try:
+                self._widgets["report"].set_filter({"machine":filter["machine"]})
+            except KeyError:
+                pass
+        super(FixDetailView, self).set_filter(filter)
+
 class FixView(TableView):
     model = models.Fix
     sort_by = "-date"
     detail_view = FixDetailView
     fields = ["date", "comment", "report", "fixed", "machine", "user",]
+    def set_filter(self, filter):
+        if filter is not None:
+            if "report" in filter.keys():
+                filter["machine"]=filter["report"].machine
+        super(FixView, self).set_filter(filter)
+
+
+    def create_model_instance(self):
+        m = super(FixView,self).create_model_instance()
+        m.machine = self.filter["machine"]
+        return m
 
 class FixWithButtonsView(ActionView):
 
@@ -127,11 +176,27 @@ class ReportDetailView(DetailView):
     model = models.Report
     inline_views = ((FixWithButtonsView, "report", u"Ремонты этой неисправности"),)
 
+    def set_filter(self, filter):
+        super(ReportDetailView, self).set_filter(filter)
+        if filter is not None:
+            self._widgets["maintenance"].set_filter({"machine":filter["machine"]})
+
+
 class ReportView(TableView):
     model = models.Report
     sort_by = "-date"
     fields = ['date', 'comment',  'interest', 'is_fixed', 'maintenance', 'reporttemplate', 'machine', 'user',]
     detail_view = ReportDetailView
+    def create_model_instance(self):
+        m = super(ReportView,self).create_model_instance()
+        m.machine = self.filter["machine"]
+        return m
+
+    def set_filter(self, filter):
+        if filter is not None:
+            if "maintenance" in filter.keys():
+                filter["machine"]=filter["maintenance"].machine
+        super(ReportView, self).set_filter(filter)
 
 class ReportWithButtonsView(ActionView):
     viewclass = ReportView
@@ -139,13 +204,17 @@ class ReportWithButtonsView(ActionView):
 
 class MaintenanceDetailView(DetailView):
     model = models.Maintenance
-    inline_views = ((ChecklistInlineView, "paction", u"Ответы на чеклист"),)
+    inline_views = ((ChecklistInlineView, "maintenance", u"Ответы на чеклист"),)
 
 class MaintenanceView(TableView):
     model = models.Maintenance
     sort_by = "-date"
     fields = ['date', 'comment', 'machine', 'user']
     detail_view = MaintenanceDetailView
+    def create_model_instance(self):
+        m = super(MaintenanceView,self).create_model_instance()
+        m.machine = self.filter["machine"]
+        return m
 
 class MaintenanceWithButtonsView(ActionView):
     viewclass = MaintenanceView
@@ -159,6 +228,10 @@ class CheckupView(TableView):
     sort_by = "-date"
     fields = ['date', 'comment', 'motohours','machine', 'user']
     detail_view = CheckupDetailView
+    def create_model_instance(self):
+        m = super(CheckupView,self).create_model_instance()
+        m.machine = self.filter["machine"]
+        return m
 
 class CheckupWithButtonsView(ActionView):
     viewclass = CheckupView
