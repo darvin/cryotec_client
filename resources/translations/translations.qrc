@@ -1,0 +1,19 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource lang="en">
+    <file alias="cryotec_client.qm">cryotec_client_en.qm</file>
+</qresource>
+<qresource lang="ru_UA">
+    <file alias="qt.qm">qt_ru.qm</file>
+    <file alias="cryotec_client.qm">cryotec_client_ru.qm</file>
+</qresource>
+
+<qresource lang="ru">
+    <file alias="qt.qm">qt_ru.qm</file>
+    <file alias="cryotec_client.qm">cryotec_client_ru.qm</file>
+</qresource>
+
+<qresource lang="ru_RU">
+    <file alias="qt.qm">qt_ru.qm</file>
+    <file alias="cryotec_client.qm">cryotec_client_ru.qm</file>
+</qresource>
+</RCC>

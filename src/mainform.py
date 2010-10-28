@@ -7,7 +7,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from settings import check_settings, error_settings, SettingsDialog
-import images_rc
+import images_rc, translation_rc
 from widgets import ServerResponceDock, ShowModelInfoDock
 import settings
 
@@ -163,6 +163,17 @@ def main():
     app.setApplicationName("CryotecClient")
     app.setOrganizationName("SKOpenCodes")
     app.setOrganizationDomain("skopencodes.org")
+
+
+    qtTranslator = QTranslator()
+    if qtTranslator.load("qt",":/"):
+        app.installTranslator(qtTranslator)
+
+    appTranslator = QTranslator()
+    if appTranslator.load("cryotec_client", ":/"):
+        app.installTranslator(appTranslator)
+
+
     settings = QSettings()
     app.setStyle(settings.value("applicationStyle", "windowsxp").toString())
     pixmap = QPixmap(":/images/splashscreen.png")
@@ -175,12 +186,17 @@ def main():
     app.processEvents()
     check_settings(splash)
 
-#    try:
-    from models import models
-#    except ImportError:
-#        error_settings(splash, "server_package")
-#    except:
-#        error_settings(splash, "address")
+    try:
+        from models import models
+    except ImportError:
+        error_settings(splash, {"fields":("server_package"),
+                                "text":u"Проверьте название пакета сервера",
+                                "error":True})
+
+    except:
+        error_settings(splash, {"fields":("address","api_path"),
+                                "text":u"Проверьте настройки сервера",
+                                "error":True})
 
     form = MainWindow()  # создаёт объект формы
     splash.finish(form)

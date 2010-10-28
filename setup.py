@@ -54,6 +54,8 @@ class CryotecClientBuildUi(Command):
             return
     def run(self):
         self.compile_qrc( 'resources/images/images.qrc', 'src/images_rc.py' )
+        self.compile_qrc( 'resources/translations/translations.qrc', 'src/translation_rc.py' )
+
 
 class CryotecClientBuild(build):
     def is_win_platform(self):
