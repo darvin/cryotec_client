@@ -99,7 +99,7 @@ class ChecklistInlineView(QFrame, UndetailView):
             if q.required:
                 q_str = u"<b>%s</b>" % q_str
 
-            w = TextEditWidget()
+            w = TextEditWidget(models.ChecklistAnswer.comment)
             w.setData(answer.comment)
             self._widgets.append(w)
             self.formlayout.addRow(QtCore.QString.fromUtf8(q_str), w)
