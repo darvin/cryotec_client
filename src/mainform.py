@@ -9,6 +9,7 @@ from PyQt4.QtGui import *
 from settings import check_settings, error_settings, SettingsDialog
 import images_rc, translation_rc
 from widgets import ServerResponceDock, ShowModelInfoDock
+from aboutdialog import AboutDialog
 import settings
 
 class MainWindow(QMainWindow):
@@ -57,6 +58,11 @@ class MainWindow(QMainWindow):
         settingsAction = QAction(QIcon(":/icons/setting_tools.png"), u"Настройки", self)
         settingsAction.triggered.connect(self.settings_dialog.exec_)
 
+        self.about_dialog = AboutDialog(self)
+        aboutAction = QAction(u"О программе...", self)
+        aboutAction.triggered.connect(self.about_dialog.exec_)
+
+
 
         self.syncAction = QAction(QIcon(":/icons/update.png"), u"Синхронизировать", self)
         self.syncAction.triggered.connect(self.synchronize)
@@ -76,19 +82,18 @@ class MainWindow(QMainWindow):
 
         machinetreepanelAction = machineDockWidget.toggleViewAction()
         machinetreepanelAction.setIcon(QIcon(":/icons/application_side_tree.png"))
-        toolbar = self.addToolBar("main")
-        toolbar.setObjectName("main_toolbar")
-        toolbar.addAction(machinetreepanelAction)
-        toolbar.addWidget(syncButton)
-        toolbar.addAction(settingsAction)
 
+        responcedockAction = self.responce_dock.toggleViewAction()
+
+        infodockAction = self.info_dock.toggleViewAction()
 
         self.statusBar().showMessage(u'Информация с сервера загружена')
 
         self.statusBar().addPermanentWidget(self.syncProgress)
         self.statusBar().addPermanentWidget(syncStatusBarButton)
 
-
+        quitAction = QAction(u"Выход", self)
+        quitAction.triggered.connect(self.close)
 
 
         self.mm = models
@@ -101,6 +106,27 @@ class MainWindow(QMainWindow):
         self.addDockWidget(Qt.BottomDockWidgetArea, self.info_dock)
         self.addDockWidget(Qt.BottomDockWidgetArea, self.responce_dock)
         self.setCorner(Qt.BottomLeftCorner, Qt.LeftDockWidgetArea)
+
+
+        mainmenu = self.menuBar()
+        filemenu = mainmenu.addMenu(u"Файл")
+        viewmenu = mainmenu.addMenu(u"Вид")
+        connmenu = mainmenu.addMenu(u"Соединение")
+        helpmenu = mainmenu.addMenu(u"Справка")
+
+        viewmenu.addAction(machinetreepanelAction)
+        viewmenu.addAction(responcedockAction)
+        viewmenu.addAction(infodockAction)
+        connmenu.addAction(self.syncAction)
+        filemenu.addAction(settingsAction)
+        filemenu.addAction(quitAction)
+        helpmenu.addAction(aboutAction)
+
+        toolbar = self.addToolBar("main")
+        toolbar.setObjectName("main_toolbar")
+        toolbar.addAction(machinetreepanelAction)
+        toolbar.addWidget(syncButton)
+        toolbar.addAction(settingsAction)
 
         settings = QSettings()
         self.restoreGeometry(settings.value("geometry").toByteArray());
