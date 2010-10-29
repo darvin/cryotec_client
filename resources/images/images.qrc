@@ -9,6 +9,11 @@
     <file>icons/update.png</file>
     <file>icons/unupdated.png</file>
     <file>icons/application_side_tree.png</file>
+    <file>icons/brick.png</file>
+    <file>icons/bricks.png</file>
+    <file>icons/pencil.png</file>
+    <file>icons/bricks_lot.png</file>
+
     <file>small_icons/add.png</file>
     <file>small_icons/connect.png</file>
     <file>small_icons/disconnect.png</file>
@@ -18,6 +23,10 @@
     <file>small_icons/update.png</file>
     <file>small_icons/unupdated.png</file>
     <file>small_icons/application_side_tree.png</file>
+    <file>small_icons/brick.png</file>
+    <file>small_icons/bricks.png</file>
+    <file>small_icons/pencil.png</file>
+    <file>small_icons/bricks_lot.png</file>
     <file>images/splashscreen.png</file>
 </qresource>
 </RCC>

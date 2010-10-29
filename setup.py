@@ -70,9 +70,11 @@ cmds = {
         'build_ui' : CryotecClientBuildUi,
         }
 
+execfile('src/__init__.py')
+
 base_options = dict (name='cryotec_client',
       install_requires = ["qtdjango","pyqt", "cryotec_server"],
-      version='1.0',
+      version=__version__,
       description='Cryotec Client',
       author='Sergey Klimov',
       author_email='dcdarv@gmail.com',

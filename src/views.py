@@ -9,10 +9,17 @@ from PyQt4.QtCore import QRect
 from qtdjango.multimodelviews import MultiModelTreeView, ModelTreeWidgetItem
 
 class MachineTreeItem(ModelTreeWidgetItem):
+    icons = {"Machine":"brick.png",
+             "MachineMark":"bricks.png",
+             "MachineType":"bricks_lot.png",
+    }
     def __init__(self,  parent, model_instance):
         super(MachineTreeItem, self).__init__(parent, model_instance)
         if model_instance.__class__==models.Machine:
             self.setText(1, unicode(model_instance.client))
+
+        i = QIcon(":/small_icons/"+self.icons[model_instance.__class__.__name__])
+        self.setIcon(0, i)
 
 class MachineTree(MultiModelTreeView):
     tree_structure = (\
@@ -109,10 +116,17 @@ class ChecklistInlineView(QFrame, UndetailView):
 class ActionView(UndetailWithButtonsView):
     edit_dumped = False
     edit_filtered_only = True
-
+    icons_for_button = {
+        "edit":"pencil.png",
+        "delete":"delete.png",
+        "new":"add.png",
+    }
     def __init__(self, filter):
         """docstring for __init__"""
         super(ActionView, self).__init__(filter)
+
+        for buttonname, iconname in self.icons_for_button.items():
+            self._buttons[buttonname].setIcon(QIcon(":/small_icons/"+iconname))
 
     def get_buttons_state(self, model_selected=None):
         f = self.view.filter
