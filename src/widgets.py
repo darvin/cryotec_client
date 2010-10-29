@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtWebKit import QWebView
-#noinspection PyUnresolvedReferences
-import PyQt4.QtNetwork
-from PyQt4.QtGui import QDockWidget, QTreeWidget
+
+from PyQt4.QtGui import QDockWidget
 from PyQt4 import QtCore
 from qtdjango.models import Model
+from views import InfoView
+
+#noinspection PyUnresolvedReferences
+import PyQt4.QtNetwork
+from PyQt4.QtWebKit import QWebView
 
 __author__ = 'darvin'
 
@@ -55,33 +58,7 @@ class ShowModelInfoDock(QDockWidget):
     def __init__(self, *args, **kwargs):
         super(ShowModelInfoDock,self).__init__(*args, **kwargs)
         self.setObjectName("info_dock")
-        self.webview = QWebView()
-        self.setWidget(self.webview)
-        self.webview.setHtml("")
-
-    @QtCore.pyqtSlot(Model)
-    def modelChanged(self, model):
-        header1 = model.__class__.verbose_name()
-        header2 = "" #unicode(model)
-        fields = model.__class__.get_fields()
-        field_text_values = {}
-        for fieldname, field in fields.items():
-            if not fieldname in ("user", "id", "extra_to_html"):
-                field_text_values[fieldname] = []
-                field_text_values[fieldname].append(field.verbose_name)
-                field_text_values[fieldname].append(field.to_text(getattr(model, fieldname)))
-
-
-        html = u""
-        html += u"<h1>%s</h1><h2>%s</h2>" %(header1,header2)
-        html += u"<br>".join([u"<b>%s:</b> <i>%s</i>"%(x[0], x[1]) for x in field_text_values.values()])
-
-        html += "<br>" + model.extra_to_html()
-
-        self.webview.setHtml(html)
-
-    @QtCore.pyqtSlot()
-    def modelCleared(self):
-        self.webview.setHtml("")
+        self.view = InfoView()
+        self.setWidget(self.view)
 
 

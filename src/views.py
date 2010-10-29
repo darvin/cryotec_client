@@ -6,7 +6,8 @@ from models import models
 from PyQt4 import QtCore
 from PyQt4.QtGui import *
 from PyQt4.QtCore import QRect
-from qtdjango.multimodelviews import MultiModelTreeView, ModelTreeWidgetItem
+from qtdjango.multimodelviews import MultiModelTreeView, ModelTreeWidgetItem, ModelInfoView
+
 
 class MachineTreeItem(ModelTreeWidgetItem):
     icons = {"Machine":"brick.png",
@@ -30,10 +31,14 @@ class MachineTree(MultiModelTreeView):
     modelSelectionChanged = QtCore.pyqtSignal([Model])
     modelSelectionCleared = QtCore.pyqtSignal()
     item_class = MachineTreeItem
+    models = (models.MachineType, models.MachineMark, models.Machine)
 
     def __init__(self, *args, **kwargs):
         super(MachineTree,self).__init__(*args, **kwargs)
         self.setColumnCount(2)
+
+    def refresh(self):
+        super(MachineTree,self).refresh()
         self.expandAll()
         self.resizeColumnToContents(0)
         self.resizeColumnToContents(1)
@@ -109,6 +114,11 @@ class ChecklistInlineView(QFrame, UndetailView):
         for q, a, w in zip(self.questions, self.answers, self._widgets):
             a.comment = w.getData()
             a.save()
+
+    def clean(self):
+        """Cleans temporary models of view"""
+        for answer in self.answers:
+            answer.delete()
 
 
 
@@ -251,3 +261,5 @@ class CheckupWithButtonsView(ActionView):
     viewclass = CheckupView
 
 
+class InfoView(ModelInfoView):
+    models = models.models

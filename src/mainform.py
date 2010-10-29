@@ -8,7 +8,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from settings import check_settings, error_settings, SettingsDialog
 import images_rc, translation_rc
-from widgets import ServerResponceDock, ShowModelInfoDock
 from aboutdialog import AboutDialog
 import settings
 
@@ -19,6 +18,8 @@ class MainWindow(QMainWindow):
         from views import FixWithButtonsView, ReportWithButtonsView, \
                 MaintenanceWithButtonsView, CheckupWithButtonsView, MachinePanel
 
+        from widgets import ServerResponceDock, ShowModelInfoDock
+
         from models import models
         self.machine_tree = MachinePanel()
 
@@ -27,8 +28,8 @@ class MainWindow(QMainWindow):
         self.info_dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea |\
                                 Qt.BottomDockWidgetArea)
 
-        self.machine_tree.view.modelSelectionChanged.connect(self.info_dock.modelChanged)
-        self.machine_tree.view.modelSelectionCleared.connect(self.info_dock.modelCleared)
+        self.machine_tree.view.modelSelectionChanged.connect(self.info_dock.view.modelChanged)
+        self.machine_tree.view.modelSelectionCleared.connect(self.info_dock.view.modelCleared)
 
 
 
@@ -62,6 +63,13 @@ class MainWindow(QMainWindow):
         aboutAction = QAction(u"О программе...", self)
         aboutAction.triggered.connect(self.about_dialog.exec_)
 
+
+
+        saveAction = QAction(QIcon(":/icons/save.png"), u"Сохранить", self)
+        saveAction.triggered.connect(self.save_to_file)
+
+        openAction = QAction(QIcon(":/icons/open.png"), u"Открыть", self)
+        openAction.triggered.connect(self.load_from_file)
 
 
         self.syncAction = QAction(QIcon(":/icons/update.png"), u"Синхронизировать", self)
@@ -119,6 +127,8 @@ class MainWindow(QMainWindow):
         viewmenu.addAction(infodockAction)
         connmenu.addAction(self.syncAction)
         filemenu.addAction(settingsAction)
+        filemenu.addAction(saveAction)
+        filemenu.addAction(openAction)
         filemenu.addAction(quitAction)
         helpmenu.addAction(aboutAction)
 
@@ -166,6 +176,19 @@ class MainWindow(QMainWindow):
 
         QMainWindow.closeEvent(self, event)
 
+    def save_to_file(self):
+        fileName = QFileDialog.getSaveFileName(self, u"Сохранить состояние как",\
+                filter=u"Файлы состояний (*.crs)") +".crs"
+        f = open(fileName,'w')
+        self.mm.save_to_file(f)
+
+    def load_from_file(self):
+        fileName = QFileDialog.getOpenFileName(self, u"Открыть состояние",\
+                filter=u"Файлы состояний (*.crs)")
+
+        f = open(fileName,'r')
+        self.mm.load_from_file(f)
+
 
 class CentralNotebook(QTabWidget):
     def __init__(self, machine_tree, info_dock, views, parent=None):
@@ -175,7 +198,7 @@ class CentralNotebook(QTabWidget):
         for label, widget in views.items():
             w = widget
             machine_tree.view.modelSelectionChanged.connect(w.filterModelSelected)
-            w.view.modelSelectionChanged.connect(self.info_dock.modelChanged)
+            w.view.modelSelectionChanged.connect(self.info_dock.view.modelChanged)
             machine_tree.view.modelSelectionCleared.connect(w.filterCleared)
 
             self.widgets.append(w)
