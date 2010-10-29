@@ -119,6 +119,7 @@ elif sys.platform == 'win32':
 
     sys.path.append(r'c:/Program Files/Microsoft Visual Studio 9.0/VC/redist/x86/Microsoft.VC90.CRT')
     sys.path.append(r'c:\Python27\vcruntime')
+    sys.path.append(r'c:\Python26\vcruntime')
     
     import py2exe
     # Override the function in py2exe to determine if a dll should be included
