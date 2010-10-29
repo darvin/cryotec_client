@@ -33,8 +33,11 @@ class ConnectionErrorDialog(QDialog):
         fileName = QFileDialog.getOpenFileName(self, u"Открыть состояние",\
                 filter=u"Файлы состояний (*.crs)")
 
-        f = open(fileName,'r')
 
-        if self.models_manager.load_from_file(f):
-            self.accept()
+
+        print fileName
+        if fileName:
+            f = open(fileName,'r')
+            if self.models_manager.load_from_file(f):
+                self.accept()
 

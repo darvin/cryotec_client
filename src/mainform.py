@@ -189,6 +189,7 @@ class MainWindow(QMainWindow):
 
         f = open(fileName,'r')
         self.mm.load_from_file(f)
+        self.machine_tree.show_all()
 
 
 class CentralNotebook(QTabWidget):
@@ -244,8 +245,9 @@ def main():
                                 "error":True})
         cd.exec_()
 
+    failed = False
+
     if not models.load_from_server():
-        failed = False
         cd = ConnectionErrorDialog(splash, {"fields":("address","api_path"),
                                 "text":u"Проверьте настройки сервера",
                                 "error":True}, models)

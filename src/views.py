@@ -55,7 +55,7 @@ class MachinePanel(QFrame):
 
         buttonShowAll.clicked.connect(self.show_all)
 
-    def show_all(self, checked):
+    def show_all(self, checked=False):
         #FIXME
         self.view.clearSelection()
         self.view.modelSelectionCleared.emit()
