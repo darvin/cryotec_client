@@ -150,9 +150,12 @@ class MainWindow(QMainWindow):
         """Synchronizes ModelsManager"""
         self.syncProgress.setVisible(True)
         qApp.processEvents()
-        self.mm.dump()
+        if not self.mm.is_all_dumped():
+            self.mm.dump()
+        else:
+            self.mm.load_from_server()
 
-    def synced(self, responces):
+    def synced(self, responces=None):
         self.statusBar().showMessage(u'Синхронизированно')
         self.syncAction.setIcon(QIcon(":/icons/update.png"))
 
@@ -184,12 +187,19 @@ class MainWindow(QMainWindow):
         self.mm.save_to_file(f)
 
     def load_from_file(self):
-        fileName = QFileDialog.getOpenFileName(self, u"Открыть состояние",\
-                filter=u"Файлы состояний (*.crs)")
+        if self.mm.is_all_dumped():
+            confirm = False
+            #FIXME
+        else:
+            confirm = True
+        if confirm:
+            fileName = QFileDialog.getOpenFileName(self, u"Открыть состояние",\
+                    filter=u"Файлы состояний (*.crs)")
+            if fileName:
+                f = open(fileName,'r')
+                self.mm.load_from_file(f)
+                self.machine_tree.show_all()
 
-        f = open(fileName,'r')
-        self.mm.load_from_file(f)
-        self.machine_tree.show_all()
 
 
 class CentralNotebook(QTabWidget):

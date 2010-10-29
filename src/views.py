@@ -39,6 +39,7 @@ class MachineTree(MultiModelTreeView):
 
     def refresh(self):
         super(MachineTree,self).refresh()
+
         self.expandAll()
         self.resizeColumnToContents(0)
         self.resizeColumnToContents(1)

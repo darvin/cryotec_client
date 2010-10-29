@@ -28,25 +28,26 @@ class ServerResponceDock(QDockWidget):
         """
         html = u""
         total_errors = 0
-        for model_name, model_resp in responces.items():
-            if model_resp:
-                html +=u"<h1>%s</h1>" % (model_name,)
-                success = 0
-                errors = 0
-                for inst_resp in model_resp:
-                    from pprint import pprint
-                    pprint(inst_resp)
-                    if inst_resp["headers"]["status"]=="200":
-                        success += 1
-                    else:
-                        html += inst_resp["body"]
-                        if inst_resp["headers"]["status"]=="500":
-                            html = u"<pre>%s</pre>" % (html,)
-                        errors += 1
-                html += u"%d объектов успешно добавлено.<br>"%(success,)
-                if errors:
-                    html += u"%d ошибок<br>"%(errors,)
-                total_errors += errors
+        if responces is not None:
+            for model_name, model_resp in responces.items():
+                if model_resp:
+                    html +=u"<h1>%s</h1>" % (model_name,)
+                    success = 0
+                    errors = 0
+                    for inst_resp in model_resp:
+                        from pprint import pprint
+                        pprint(inst_resp)
+                        if inst_resp["headers"]["status"]=="200":
+                            success += 1
+                        else:
+                            html += inst_resp["body"]
+                            if inst_resp["headers"]["status"]=="500":
+                                html = u"<pre>%s</pre>" % (html,)
+                            errors += 1
+                    html += u"%d объектов успешно добавлено.<br>"%(success,)
+                    if errors:
+                        html += u"%d ошибок<br>"%(errors,)
+                    total_errors += errors
 
 
         self.webview.setHtml(html)
