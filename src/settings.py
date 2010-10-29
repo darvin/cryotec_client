@@ -47,9 +47,6 @@ def check_settings(parent):
         sd.exec_()
 
 
-def error_settings(parent, message):
-    sd = SettingsDialog(parent=parent, error_message=message)
-    sd.exec_()
 
 def get_settings(name):
     settings = QSettings()

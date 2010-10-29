@@ -6,10 +6,11 @@
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from settings import check_settings, error_settings, SettingsDialog
+from settings import check_settings, SettingsDialog
 import images_rc, translation_rc
 from aboutdialog import AboutDialog
 import settings
+from connectionerrordialog import ConnectionErrorDialog, ConnectionErrorDialog
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -55,7 +56,7 @@ class MainWindow(QMainWindow):
         self.responce_dock.setAllowedAreas(Qt.RightDockWidgetArea|Qt.BottomDockWidgetArea)
 
 
-        self.settings_dialog = SettingsDialog()
+        self.settings_dialog = SettingsDialog(models_manager=models)
         settingsAction = QAction(QIcon(":/icons/setting_tools.png"), u"Настройки", self)
         settingsAction.triggered.connect(self.settings_dialog.exec_)
 
@@ -238,19 +239,30 @@ def main():
     try:
         from models import models
     except ImportError:
-        error_settings(splash, {"fields":("server_package"),
+        cd = ConnectionErrorDialog(splash, {"fields":("server_package"),
                                 "text":u"Проверьте название пакета сервера",
                                 "error":True})
+        cd.exec_()
 
-    except:
-        error_settings(splash, {"fields":("address","api_path"),
+    if not models.load_from_server():
+        failed = False
+        cd = ConnectionErrorDialog(splash, {"fields":("address","api_path"),
                                 "text":u"Проверьте настройки сервера",
-                                "error":True})
+                                "error":True}, models)
+        result = cd.exec_()
+        if result==QDialog.Rejected:
+            failed = True
 
-    form = MainWindow()  # создаёт объект формы
-    splash.finish(form)
-    form.show()  # даёт команду на отображение объекта формы и содержимого
-    app.exec_()  # запускает приложение
+
+
+
+    if not failed:
+        form = MainWindow()  # создаёт объект формы
+        splash.finish(form)
+        form.show()  # даёт команду на отображение объекта формы и содержимого
+        app.exec_()  # запускает приложение
+    else:
+        qApp.exit()
 
 if __name__ == "__main__":
     sys.exit(main()) 
