@@ -37,14 +37,18 @@ class SettingsDialog(qtdjango.settings.SettingsDialog):
         super(SettingsDialog,self).__init__(*args, **kwargs)
 
 
-def check_settings(parent):
+def setup_settings():
 
     settings = QSettings()
 
-    while not settings.contains("address"):
-        print "settings dialog"
-        sd = SettingsDialog(parent=parent)
-        sd.exec_()
+    if not (settings.contains("address") or settings.contains("server_package")):
+        print "settings setup"
+        for name, caption, widget_class, default in SettingsDialog.widgets_table:
+            settings.setValue(name, default)
+
+
+
+
 
 
 

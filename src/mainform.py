@@ -6,7 +6,7 @@
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from settings import check_settings, SettingsDialog
+from settings import setup_settings, SettingsDialog
 import images_rc, translation_rc
 from aboutdialog import AboutDialog
 import settings
@@ -245,7 +245,7 @@ def main():
     Qt.white)
     # make sure Qt really display the splash screen
     app.processEvents()
-    check_settings(splash)
+    setup_settings()
 
     try:
         from models import models
