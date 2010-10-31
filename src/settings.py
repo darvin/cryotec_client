@@ -32,7 +32,7 @@ class StyleComboBox(QComboBox):
 
 class SettingsDialog(qtdjango.settings.SettingsDialog):
     widgets_table = qtdjango.settings.SettingsDialog.widgets_table +\
-            [("applicationStyle", u"Стиль приложения", StyleComboBox, "windowsxp"),]
+            [("applicationStyle", u"Стиль приложения", StyleComboBox, "Plastique"),]
     def __init__(self, *args, **kwargs):
         super(SettingsDialog,self).__init__(*args, **kwargs)
 

@@ -238,13 +238,13 @@ def main():
     app.processEvents()
     setup_settings()
 
-    try:
-        from models import models
-    except ImportError:
-        cd = ConnectionErrorDialog(splash, {"fields":("server_package"),
-                                "text":u"Проверьте название пакета сервера",
-                                "error":True})
-        cd.exec_()
+#    try:
+    from models import models
+#    except ImportError:
+#        cd = ConnectionErrorDialog(splash, {"fields":("server_package"),
+#                                "text":u"Проверьте название пакета сервера",
+#                                "error":True})
+#        cd.exec_()
 
     failed = False
 
