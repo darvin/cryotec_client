@@ -19,7 +19,7 @@ class MainWindow(QMainWindow):
         from views import FixWithButtonsView, ReportWithButtonsView, \
                 MaintenanceWithButtonsView, CheckupWithButtonsView, MachinePanel
 
-        from widgets import ServerResponceDock, ShowModelInfoDock
+        from widgets import ServerResponceDock, ShowModelInfoDock, StatusBar
 
         from models import models
         self.machine_tree = MachinePanel()
@@ -78,14 +78,8 @@ class MainWindow(QMainWindow):
         syncButton = QToolButton()
         syncButton.setDefaultAction(self.syncAction)
         syncButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-        syncStatusBarButton = QToolButton()
-        syncStatusBarButton.setDefaultAction(self.syncAction)
-        self.syncProgress = QProgressBar()
-        self.syncProgress.setRange(0,0)
-        self.syncProgress.setVisible(False)
-        self.syncProgress.setTextVisible(False)
-        self.syncProgress.setMinimumSize(QSize(2,2))
-        self.syncProgress.setMaximumSize(QSize(40,20))
+#        syncStatusBarButton = QToolButton()
+#        syncStatusBarButton.setDefaultAction(self.syncAction)
 
 
 
@@ -96,20 +90,25 @@ class MainWindow(QMainWindow):
 
         infodockAction = self.info_dock.toggleViewAction()
 
-        self.statusBar().showMessage(u'Информация с сервера загружена')
 
-        self.statusBar().addPermanentWidget(self.syncProgress)
-        self.statusBar().addPermanentWidget(syncStatusBarButton)
+#        self.statusBar().addPermanentWidget(syncStatusBarButton)
 
         quitAction = QAction(u"Выход", self)
         quitAction.triggered.connect(self.close)
 
+        self.status_bar = StatusBar(parent=self)
+        self.setStatusBar(self.status_bar)
 
         self.mm = models
         self.mm.add_notify_dumped(self.synced)
         self.mm.add_notify_undumped(self.unsynced)
-
-
+        self.mm.add_notify_dumped(self.status_bar.synced)
+        self.mm.add_notify_undumped(self.status_bar.unsynced)
+        self.mm.add_notify_dumped(self.responce_dock.show_responce)
+        self.mm.add_notify_change_user(self.status_bar.userChanged)
+        self.status_bar.userChanged(self.mm.get_current_user())
+        self.status_bar.clicked.connect(\
+                lambda: self.info_dock.view.modelChanged(self.mm.get_current_user()))
 
         self.addDockWidget(Qt.LeftDockWidgetArea, machineDockWidget)
         self.addDockWidget(Qt.BottomDockWidgetArea, self.info_dock)
@@ -148,25 +147,17 @@ class MainWindow(QMainWindow):
 
     def synchronize(self):
         """Synchronizes ModelsManager"""
-        self.syncProgress.setVisible(True)
-        qApp.processEvents()
+        self.statusBar().synchronize()
         if not self.mm.is_all_dumped():
             self.mm.dump()
         else:
             self.mm.load_from_server()
 
     def synced(self, responces=None):
-        self.statusBar().showMessage(u'Синхронизированно')
         self.syncAction.setIcon(QIcon(":/icons/update.png"))
 
-        self.syncProgress.setVisible(False)
-#        self.syncProgress.hide()
-
-        self.responce_dock.show_responce(responces)
-        qApp.processEvents()
 
     def unsynced(self):
-        self.statusBar().showMessage(u'Есть несохранненные записи')
         self.syncAction.setIcon(QIcon(":/icons/unupdated.png"))
 
 
