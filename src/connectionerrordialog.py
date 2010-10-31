@@ -27,6 +27,7 @@ class ConnectionErrorDialog(QDialog):
         sd = SettingsDialog(parent=self.parent(), error_message=self.message,\
                     models_manager=self.models_manager)
         if sd.exec_()==QDialog.Accepted:
+            self.models_manager.load_from_server()
             self.accept()
 
     def file_clicked(self):
