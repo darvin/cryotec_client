@@ -5,7 +5,7 @@ from qtdjango.undetailviews import *
 from models import models
 from PyQt4 import QtCore
 from PyQt4.QtGui import *
-from PyQt4.QtCore import QRect
+from PyQt4.QtCore import QRect, QSettings
 from qtdjango.multimodelviews import MultiModelTreeView, ModelTreeWidgetItem, ModelInfoView
 
 
