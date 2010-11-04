@@ -15,6 +15,8 @@ from connectionerrordialog import ConnectionErrorDialog, ConnectionErrorDialog
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
+        self.setWindowIcon(QIcon(":/small_icons/cryotec_logo.png"))
+        self.setWindowTitle(u"Криотек Клиент")
         self.resize(1024,768)
         from views import FixWithButtonsView, ReportWithButtonsView, \
                 MaintenanceWithButtonsView, CheckupWithButtonsView, MachinePanel
@@ -61,15 +63,15 @@ class MainWindow(QMainWindow):
         settingsAction.triggered.connect(self.settings_dialog.exec_)
 
         self.about_dialog = AboutDialog(self)
-        aboutAction = QAction(u"О программе...", self)
+        aboutAction = QAction(QIcon(":/icons/information.png"), u"О программе...", self)
         aboutAction.triggered.connect(self.about_dialog.exec_)
 
 
 
-        saveAction = QAction(QIcon(":/icons/save.png"), u"Сохранить", self)
+        saveAction = QAction(QIcon(":/icons/save_as.png"), u"Сохранить", self)
         saveAction.triggered.connect(self.save_to_file)
 
-        openAction = QAction(QIcon(":/icons/open.png"), u"Открыть", self)
+        openAction = QAction(QIcon(":/icons/folder.png"), u"Открыть", self)
         openAction.triggered.connect(self.load_from_file)
 
 

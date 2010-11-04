@@ -13,6 +13,15 @@
     <file>icons/bricks.png</file>
     <file>icons/pencil.png</file>
     <file>icons/bricks_lot.png</file>
+    <file>icons/save_as.png</file>
+    <file>icons/folder.png</file>
+    <file>icons/information.png</file>
+    <file>icons/cryotec_logo.png</file>
+
+    <file>small_icons/save_as.png</file>
+    <file>small_icons/folder.png</file>
+    <file>small_icons/information.png</file>
+    <file>small_icons/cryotec_logo.png</file>
 
     <file>small_icons/add.png</file>
     <file>small_icons/connect.png</file>
