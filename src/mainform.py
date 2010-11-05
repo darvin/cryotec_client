@@ -46,13 +46,14 @@ class MainWindow(QMainWindow):
         self.notebook = CentralNotebook(self.machine_tree, self.info_dock, self.note_views)
 
         self.setCentralWidget(self.notebook)
-
+        
+        
+        
         machineDockWidget = QDockWidget(u"Оборудование", self)
         machineDockWidget.setObjectName("machine_dock")
 
         machineDockWidget.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         machineDockWidget.setWidget(self.machine_tree)
-
 
         self.responce_dock = ServerResponceDock(u"Ответ от сервера", self)
         self.responce_dock.setAllowedAreas(Qt.RightDockWidgetArea|Qt.BottomDockWidgetArea)
