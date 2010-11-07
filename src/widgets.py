@@ -35,8 +35,6 @@ class ServerResponceDock(QDockWidget):
                     success = 0
                     errors = 0
                     for inst_resp in model_resp:
-                        from pprint import pprint
-                        pprint(inst_resp)
                         if inst_resp["headers"]["status"]=="200":
                             success += 1
                         else:

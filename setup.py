@@ -132,15 +132,16 @@ elif sys.platform == 'win32':
     py2exe.build_exe.isSystemDLL = isSystemDLL
     extra_options = dict(
         setup_requires=['py2exe'],
-        windows={
+        windows=[{
             "script":mainscript,
             "icon_resources": [(0, "resources/images/ico/cryotec_logo.ico")],
-            },
+            }],
         options = {
             py2exe : {
                 "includes" : ["sip", "PyQt4._qt", "cryotec_server", "qtdjango"]
                 }
             },
+        
         data_files = [('resources',glob.glob('data/*.png')),
                       ('resources',glob.glob('data/*.ico')),
                       ("Microsoft.VC90.CRT", glob.glob(r'c:\Python27\vcruntime\*.*'))],

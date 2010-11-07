@@ -42,7 +42,6 @@ def setup_settings():
     settings = QSettings()
 
     if not (settings.contains("address") or settings.contains("server_package")):
-        print "settings setup"
         for name, caption, widget_class, default in SettingsDialog.widgets_table:
             settings.setValue(name, default)
 

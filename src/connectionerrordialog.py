@@ -36,7 +36,6 @@ class ConnectionErrorDialog(QDialog):
 
 
 
-        print fileName
         if fileName:
             f = open(fileName,'r')
             if self.models_manager.load_from_file(f):
