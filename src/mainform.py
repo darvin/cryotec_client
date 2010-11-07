@@ -66,8 +66,8 @@ class MainWindow(QMainWindow):
         self.about_dialog = AboutDialog(self)
         aboutAction = QAction(QIcon(":/icons/information.png"), u"О программе...", self)
         aboutAction.triggered.connect(self.about_dialog.exec_)
-
-
+        helpAction = QAction(u"Справка", self)
+        helpAction.triggered.connect(lambda: QDesktopServices.openUrl(QUrl("doc/index.html")))
 
         saveAction = QAction(QIcon(":/icons/save_as.png"), u"Сохранить", self)
         saveAction.triggered.connect(self.save_to_file)
@@ -134,6 +134,7 @@ class MainWindow(QMainWindow):
         filemenu.addAction(openAction)
         filemenu.addAction(quitAction)
         helpmenu.addAction(aboutAction)
+        helpmenu.addAction(helpAction)
 
         toolbar = self.addToolBar("main")
         toolbar.setObjectName("main_toolbar")
