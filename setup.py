@@ -72,7 +72,7 @@ cmds = {
 
 execfile('src/__init__.py')
 
-base_options = dict (name='cryotec_client',
+base_options = dict (name=u'cryotec_client',
       install_requires = ["qtdjango","pyqt", "cryotec_server"],
       version=__version__,
       description='Cryotec Client',
