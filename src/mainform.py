@@ -164,7 +164,6 @@ class MainWindow(QMainWindow):
     def unsynced(self):
         self.syncAction.setIcon(QIcon(":/icons/unupdated.png"))
 
-
     def closeEvent(self, event):
         settings = QSettings()
         settings.setValue("geometry", self.saveGeometry())
@@ -264,10 +263,10 @@ def main():
 
 
     if not failed:
-        form = MainWindow()  # создаёт объект формы
+        form = MainWindow()
         splash.finish(form)
-        form.show()  # даёт команду на отображение объекта формы и содержимого
-        app.exec_()  # запускает приложение
+        form.show()
+        app.exec_()
     else:
         qApp.exit()
 

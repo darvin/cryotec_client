@@ -31,8 +31,15 @@ class StyleComboBox(QComboBox):
 
 
 class SettingsDialog(qtdjango.settings.SettingsDialog):
-    widgets_table = qtdjango.settings.SettingsDialog.widgets_table +\
-            [("applicationStyle", u"Стиль приложения", StyleComboBox, "Plastique"),]
+    widgets_table = [
+                    ("address", u"Адрес сервера", QLineEdit, "http://cryotec.webfactional.com"),
+                    ("api_path", u"Путь к api сервера", QLineEdit, "/api/"),
+                    ("server_package", u"Название пакета сервера", QLineEdit, "cryotec_server"),
+                    ("login", u"Ваш логин", QLineEdit, ""),
+                    ("password", u"Ваш пароль", QLineEdit, ""),
+                    ("open_links_in_external_browser", \
+                        u"Открывать ссылки из окна информации во внешнем браузере", qtdjango.settings.BooleanEdit, True),
+                    ("applicationStyle", u"Стиль приложения", StyleComboBox, "Plastique"),]
     def __init__(self, *args, **kwargs):
         super(SettingsDialog,self).__init__(*args, **kwargs)
 
