@@ -210,7 +210,7 @@ class ReportDetailView(DetailView):
 class ReportView(TableView):
     model = models.Report
     sort_by = "-date"
-    fields = ['date', 'comment',  'interest', 'is_fixed', 'maintenance', 'reporttemplate', 'machine', 'user',]
+    fields = ['date', 'comment',  'interest', 'is_fixed', 'maintenance', 'reporttemplate', 'machine', 'user', 'reported_by']
     detail_view = ReportDetailView
     def create_model_instance(self):
         m = super(ReportView,self).create_model_instance()
