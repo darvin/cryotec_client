@@ -55,6 +55,7 @@ class CryotecClientBuildUi(Command):
     def run(self):
         self.compile_qrc( 'resources/images/images.qrc', 'src/images_rc.py' )
         self.compile_qrc( 'resources/translations/translations.qrc', 'src/translation_rc.py' )
+        self.compile_qrc( 'resources/css/styles.qrc', 'src/styles_rc.py' )
 
 
 class CryotecClientBuild(build):

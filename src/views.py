@@ -7,7 +7,7 @@ from PyQt4 import QtCore
 from PyQt4.QtGui import *
 from PyQt4.QtCore import QRect, QSettings
 from qtdjango.multimodelviews import MultiModelTreeView, ModelTreeWidgetItem, ModelInfoView
-
+import styles_rc
 
 class MachineTreeItem(ModelTreeWidgetItem):
     icons = {"Machine":"brick.png",
@@ -264,3 +264,21 @@ class CheckupWithButtonsView(ActionView):
 
 class InfoView(ModelInfoView):
     models = models.models
+    def __init__(self, *args, **kwargs):
+        super(InfoView, self).__init__(*args, **kwargs)
+        self.load(QtCore.QUrl("qrc:///css/info.css"))
+        self.settings().setUserStyleSheetUrl(QtCore.QUrl("qrc:///css/info.css"))
+
+
+    @QtCore.pyqtSlot(Model)
+    def modelChanged(self, model):
+        super(InfoView, self).modelChanged(model)
+        self.setHtml(self.page().mainFrame().toHtml()+"""
+<style type="text/css">
+table, td, th {
+    border: 1px solid black;
+    border-style: solid;
+    border-collapse: collapse;
+}
+</style>
+        """) #fixme
