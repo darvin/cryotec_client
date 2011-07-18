@@ -164,7 +164,7 @@ class ActionView(UndetailWithButtonsView):
 
 class FixDetailView(DetailView):
     model = models.Fix
-
+    fields = ("date", "report", "name", 'needed_time', 'needed_resources', "engineers", "fixed",  "user","machine", "comment")
     def set_filter(self, filter):
 
 
@@ -179,7 +179,7 @@ class FixView(TableView):
     model = models.Fix
     sort_by = "-date"
     detail_view = FixDetailView
-    fields = ["date", "comment", "report", "fixed", "machine", "user",]
+    fields = ("date", "report", "name", 'needed_time', 'needed_resources', "engineers", "fixed",  "user","machine", "comment")
     def set_filter(self, filter):
         if filter is not None:
             if "report" in filter.keys():
@@ -200,17 +200,18 @@ class FixWithButtonsView(ActionView):
 class ReportDetailView(DetailView):
     model = models.Report
 #    inline_views = ((FixWithButtonsView, "report", u"Ремонты этой неисправности"),)
+    fields = ('date', 'name', 'info', 'reporttemplate', 'interest', 'is_fixed', "source_maintenance", "source_contactface", "source_user", 'user', 'machine', 'comment')
 
     def set_filter(self, filter):
         super(ReportDetailView, self).set_filter(filter)
         if filter is not None:
-            self._widgets["maintenance"].set_filter({"machine":filter["machine"]})
+            self._widgets["source_maintenance"].set_filter({"machine":filter["machine"]})
 
 
 class ReportView(TableView):
     model = models.Report
     sort_by = "-date"
-    fields = ['date', 'comment',  'interest', 'is_fixed', 'maintenance', 'reporttemplate', 'machine', 'user', 'reported_by']
+    fields = ('date', 'name', 'info', 'reporttemplate', 'interest', 'is_fixed', 'source', 'user', 'machine', 'comment')
     detail_view = ReportDetailView
     def create_model_instance(self):
         m = super(ReportView,self).create_model_instance()
@@ -230,11 +231,12 @@ class ReportWithButtonsView(ActionView):
 class MaintenanceDetailView(DetailView):
     model = models.Maintenance
     inline_views = ((ChecklistInlineView, "maintenance", u"Ответы на чеклист"),)
+    fields = ('date', 'name', 'needed_time','needed_resources','motohours','operation_mode','next_date','engineers', 'user', 'machine', 'comment')
 
 class MaintenanceView(TableView):
     model = models.Maintenance
     sort_by = "-date"
-    fields = ['date', 'comment', 'machine', 'user']
+    fields = ('date', 'name', 'needed_time','needed_resources','motohours','operation_mode','next_date','engineers', 'user', 'machine', 'comment')
     detail_view = MaintenanceDetailView
     def create_model_instance(self):
         m = super(MaintenanceView,self).create_model_instance()
@@ -247,11 +249,12 @@ class MaintenanceWithButtonsView(ActionView):
 
 class CheckupDetailView(DetailView):
     model = models.Checkup
+    fields = ('date', 'comment', 'motohours', 'user','machine')
 
 class CheckupView(TableView):
     model = models.Checkup
     sort_by = "-date"
-    fields = ['date', 'comment', 'motohours','machine', 'user']
+    fields = ('date', 'comment', 'motohours', 'user','machine')
     detail_view = CheckupDetailView
     def create_model_instance(self):
         m = super(CheckupView,self).create_model_instance()
